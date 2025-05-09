@@ -1,10 +1,12 @@
 # This example requires the 'message_content' intent.
 
 import discord
+from discord.ext import commands
 import os
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 client = discord.Client(intents=intents)
 
@@ -18,6 +20,15 @@ async def on_message(message):
         return
 
     if message.content.startswith('/idkhelpmeout'):
-        await message.channel.send('@Zilveren sucks eggs')
+        # Replace "Strider" with the username you want to search for
+        user = get_user("Strider", message.guild)
+        if user:
+            await message.channel.send(f'{user.mention} how you doin?')
+        else:
+            await message.channel.send("User not found.")
+
+def get_user(username, guild):
+    # Search for the user in the guild's members
+    return discord.utils.find(lambda u: u.name == username or u.global_name == username, guild.members)
 
 client.run(os.getenv("BOT_TOKEN"))
